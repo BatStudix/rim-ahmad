@@ -384,7 +384,12 @@
 </div>
  
 
-<!-- ضيف رابط الأغنية هون بمكان SONG_URL_HERE.mp3 -->
+<div class="floating-controls">
+  <div id="music-toggle" class="fab" title="تشغيل/إيقاف الأغنية">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+  </div>
+</div>
+
 <audio id="bg-music" loop preload="auto">
   <source src="Amr Diab … Qusad Einy عمرو دياب … قصاد عيني.mp3" type="audio/mpeg">
 </audio>
@@ -398,19 +403,21 @@
     if (playing) return;
     music.play().then(function () {
       playing = true;
-      toggle.classList.add('music-on');
+      if (toggle) toggle.classList.add('music-on');
     }).catch(function () {});
   }
 
   function stopMusic() {
     music.pause();
     playing = false;
-    toggle.classList.remove('music-on');
+    if (toggle) toggle.classList.remove('music-on');
   }
 
-  toggle.addEventListener('click', function () {
-    if (playing) stopMusic(); else startMusic();
-  });
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      if (playing) stopMusic(); else startMusic();
+    });
+  }
 
   // محاولة تشغيل الموسيقى فور فتح الصفحة
   startMusic();
